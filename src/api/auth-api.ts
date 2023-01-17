@@ -47,44 +47,44 @@ class AuthApi {
     const { email, password } = request;
 
     const response = await axios.post('/api/auth/login', {
-        email,
-        password
-      });
+      email,
+      password
+    });
 
     const { accessToken, user } = response.data;
-    if(accessToken)
-        setSession(accessToken);
-    return {accessToken, user}
+    if (accessToken)
+      setSession(accessToken);
+    return { accessToken, user }
   }
 
   async register(request: RegisterRequest): RegisterResponse {
     const { email, firstname, lastname, password } = request;
 
     const response = await axios.post('/api/auth/register', {
-        email,
-        password,
-        firstname,
-        lastname,
-      });
+      email,
+      password,
+      firstname,
+      lastname,
+    });
 
     const { accessToken, user } = response.data;
-    if(accessToken)
-        setSession(accessToken);
-    return {accessToken, user};
+    if (accessToken)
+      setSession(accessToken);
+    return { accessToken, user };
   }
 
   async update(id: string): UpdateResponse {
 
     const response = await axios.post('/api/auth/updateUser', {
-        id
-      });
+      id
+    });
 
     const { accessToken, user } = response.data;
 
-    return {accessToken, user};
+    return { accessToken, user };
   }
 
-  
+
 }
 
 export const authApi = new AuthApi();

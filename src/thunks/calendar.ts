@@ -17,7 +17,7 @@ type CreateEventParams = {
 };
 
 export const createEvent = (params: CreateEventParams): AppThunk => async (dispatch): Promise<void> => {
-  console.log("thunk-createEvent",params);
+  console.log("thunk-createEvent", params);
   const response = await calendarApi.createEvent(params);
 
   dispatch(slice.actions.createEvent(response));

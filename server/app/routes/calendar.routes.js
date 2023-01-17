@@ -6,12 +6,13 @@ module.exports = (app) => {
     next();
   });
 
-  
+
   app.get('/api/calendar-event/getEvents', controller.getEvents);
 
   // -----------------------------------------------------------------------------------
 
   app.post('/api/calendar-event/create', controller.create);
   app.post('/api/calendar-event/update', controller.update);
+  app.post('/api/calendar-event/delete', controller.delete);
 
 };

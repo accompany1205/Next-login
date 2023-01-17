@@ -54,7 +54,7 @@ const slice = createSlice({
         },
 
         // DELETE USERS
-        deleteUser(state:UserStateType, action:PayloadAction<string[]>):void {
+        deleteUser(state:UserStateType, action:PayloadAction<(string|null)[]>):void {
             const filteredList = filter(state.users, (user) => filter(action.payload,(id)=>id==user.id).length === 0);
             state.users = filteredList;
         },

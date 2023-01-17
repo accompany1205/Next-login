@@ -2,7 +2,6 @@ import { addDays, endOfDay, setHours, setMinutes, startOfDay, subDays } from 'da
 import type { CalendarEvent } from '../types/calendar';
 import { createResourceId } from '../utils/create-resource-id';
 import { deepCopy } from '../utils/deep-copy';
-import axios from '../utils/axios';
 
 const now = new Date();
 
@@ -107,27 +106,7 @@ type DeleteEventResponse = Promise<true>
 
 class CalendarApi {
   getEvents(request?: GetEventsRequest): GetEventsResponse {
-    return new Promise((resolve, reject) => {
-      try {
-        new Promise((resolve, reject) => {
-          try {
-            resolve(axios.get('/api/calendar-event/getEvents'))
-          } catch (err) {
-            console.error('[Calendar Api]: ', err);
-            reject(new Error('Internal server error'));
-          }
-        }).then((result: any) => {
-          console.log('geteventlist', result);
-          let eventlist: CalendarEvent[] = [];
-          result.data.lists.map((item: any) => eventlist.push(deepCopy(item)));
-          resolve(eventlist);
-
-        });
-      } catch (err) {
-        console.error('[Calendar Api]: ', err);
-        reject(new Error('Internal server error'));
-      }
-    })
+    return Promise.resolve(deepCopy(events));
   }
 
   createEvent(request: CreateEventRequest): CreateEventResponse {
@@ -146,27 +125,21 @@ class CalendarApi {
 
         // Create the new event
         const event = {
+          id: createResourceId(),
           allDay,
           description,
           end,
           start,
           title
         };
-        console.log(event);
-        new Promise((resolve, reject) => {
-          try {
-            resolve(axios.post('/api/calendar-event/create', { event }))
-          } catch (err) {
-            console.error('[Calendar Api]: ', err);
-            reject(new Error('Internal server error'));
-          }
 
-        }).then((result: any) => {
-          console.log(result);
-          //clonedEvents.push(result.data);
-          resolve(deepCopy(result.data));
+        // Add the new event to events
+        clonedEvents.push(event);
 
-        });
+        // Save changes
+        events = clonedEvents;
+
+        resolve(deepCopy(event));
       } catch (err) {
         console.error('[Calendar Api]: ', err);
         reject(new Error('Internal server error'));
@@ -182,27 +155,21 @@ class CalendarApi {
         // Make a deep copy
         const clonedEvents = deepCopy(events);
 
-        // Create the new event
+        // Find the event that will be updated
+        const event = events.find((_event) => _event.id === eventId);
 
-        console.log(update);
-        new Promise((resolve, reject) => {
-          try {
-            resolve(axios.post('/api/calendar-event/update',
-              {
-                id: eventId,
-                update: update
-              }))
-          } catch (err) {
-            console.error('[Calendar Api]: ', err);
-            reject(new Error('Internal server error'));
-          }
+        if (!event) {
+          reject(new Error('Event not found'));
+          return;
+        }
 
-        }).then((result: any) => {
-          console.log(result);
-          //clonedEvents.push(result.data);
-          resolve(deepCopy(result.data));
+        // Update the event
+        Object.assign(event, update);
 
-        });
+        // Save changes
+        events = clonedEvents;
+
+        resolve(deepCopy(event));
       } catch (err) {
         console.error('[Calendar Api]: ', err);
         reject(new Error('Internal server error'));
@@ -215,20 +182,23 @@ class CalendarApi {
 
     return new Promise((resolve, reject) => {
       try {
-        new Promise((resolve, reject) => {
-          try {
-            resolve(axios.post('/api/calendar-event/delete',
-              {
-                id: eventId,
-              }))
-          } catch (err) {
-            console.error('[Calendar Api]: ', err);
-            reject(new Error('Internal server error'));
-          }
+        // Make a deep copy
+        const clonedEvents = deepCopy(events);
 
-        }).then((result: any) => {
-          resolve(true);
-        });
+        // Find the event that will be removed
+        const event = events.find((_event) => _event.id === eventId);
+
+        if (!event) {
+          reject(new Error('Event not found'));
+          return;
+        }
+
+        events = events.filter((_event) => _event.id !== eventId);
+
+        // Save changes
+        events = clonedEvents;
+
+        resolve(true);
       } catch (err) {
         console.error('[Calendar Api]: ', err);
         reject(new Error('Internal server error'));

@@ -87,7 +87,7 @@ const Calendar: NextPage = () => {
     eventId: undefined,
     range: undefined
   });
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent|null>(dialog.eventId && events.find((event:any) => event.id === dialog.eventId));
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(dialog.eventId && events.find((event: any) => event.id === dialog.eventId));
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
@@ -181,7 +181,7 @@ const Calendar: NextPage = () => {
 
       calendarApi.unselect();
     }
-    if(selectedEvent)
+    if (selectedEvent)
       setSelectedEvent(null);
     setDialog({
       isOpen: true,
@@ -194,8 +194,8 @@ const Calendar: NextPage = () => {
 
   const handleEventSelect = (arg: EventClickArg): void => {
     console.log(arg.event.id);
-    if(arg.event.id){
-      setSelectedEvent(events.find((event:any) => event.id == arg.event.id)||null)
+    if (arg.event.id) {
+      setSelectedEvent(events.find((event: any) => event.id == arg.event.id) || null)
     }
     setDialog({
       isOpen: true,
@@ -242,7 +242,7 @@ const Calendar: NextPage = () => {
     });
   };
 
-  
+
 
   return (
     <>

@@ -14,14 +14,22 @@ const db = require('../models');
 
 const Op = db.Sequelize.Op;
 
-const { getPagination } = require('./queryAssist');
+const {
+  getPagination
+} = require('./queryAssist');
 
-const { getPagingData } = require('./queryAssist');
+const {
+  getPagingData
+} = require('./queryAssist');
 var fs = require('fs');
-const { removeDirectory } = require('./utils/fsUtils');
+const {
+  removeDirectory
+} = require('./utils/fsUtils');
 
 const User = db.user;
-const { ROLES } = db;
+const {
+  ROLES
+} = db;
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -31,23 +39,42 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
-const upload = multer({ storage }).single('file');
+const upload = multer({
+  storage
+}).single('file');
 
 exports.getUserList = async (req, res) => {
-  const { status, orderBy, filterString, page } = req.body;
-  
+  const {
+    status,
+    orderBy,
+    filterString,
+    page
+  } = req.body;
 
-  const { limit, offset } = getPagination(page.page, page.rows);
 
-  var condition = status != 'all' ? { status: status } : null;
+  const {
+    limit,
+    offset
+  } = getPagination(page.page, page.rows);
+
+  var condition = status != 'all' ? {
+    status: status
+  } : null;
   const count = await User.count({
     where: {
       [Op.and]: [
         condition,
         {
-          [Op.or]: [
-            { firstname: { [Op.like]: `%${filterString}%` } },
-            { lastname: { [Op.like]: `%${filterString}%` } }
+          [Op.or]: [{
+              firstname: {
+                [Op.like]: `%${filterString}%`
+              }
+            },
+            {
+              lastname: {
+                [Op.like]: `%${filterString}%`
+              }
+            }
           ]
         }
       ]
@@ -61,18 +88,36 @@ exports.getUserList = async (req, res) => {
       [Op.and]: [
         condition,
         {
-          [Op.or]: [
-            { firstname: { [Op.like]: `%${filterString}%` } },
-            { lastname: { [Op.like]: `%${filterString}%` } }
+          [Op.or]: [{
+              firstname: {
+                [Op.like]: `%${filterString}%`
+              }
+            },
+            {
+              lastname: {
+                [Op.like]: `%${filterString}%`
+              }
+            }
           ]
         }
       ]
     }
   }).then((datas) => {
-    const { rows } = getPagingData(datas, page.page, limit);
+    const {
+      rows
+    } = getPagingData(datas, page.page, limit);
     const users = [];
     rows.map((userInfo) => {
-      const { id, firstname, lastname, email, photoURL, roleId, status, phone } = userInfo;
+      const {
+        id,
+        firstname,
+        lastname,
+        email,
+        photoURL,
+        roleId,
+        status,
+        phone
+      } = userInfo;
       const user = {
         id,
         firstname,
@@ -87,27 +132,32 @@ exports.getUserList = async (req, res) => {
 
       users.push(user);
     });
-    
-    res.status(200).send({ count: count, users: users });
+
+    res.status(200).send({
+      count: count,
+      users: users
+    });
   });
 };
 
 exports.updateProfile = async (req, res) => {
-  
+
   const id = req.headers['x-id'];
-  
-  var path = require.main.path+'/public/uploads/user'+id+'/avatar';
-  await fs.readdir(path, function(error, files){
-    if(error) console.log('error occoured!')
-    else files.forEach(file=> fs.unlinkSync(path+'/'+file));
+
+  var path = require.main.path + '/public/uploads/user' + id + '/avatar';
+  await fs.readdir(path, function (error, files) {
+    if (error) console.log('error occoured!')
+    else files.forEach(file => fs.unlinkSync(path + '/' + file));
   });
-  await fs.existsSync(path) || fs.mkdirSync(path,{recursive:true});
-  
+  await fs.existsSync(path) || fs.mkdirSync(path, {
+    recursive: true
+  });
+
 
   var form = new formidable.IncomingForm()
-  
+
   form.on('fileBegin', function (name, file) {
-    file.filepath = require.main.path+'/public/uploads/user' + id + '/avatar/'+file.originalFilename;
+    file.filepath = require.main.path + '/public/uploads/user' + id + '/avatar/' + file.originalFilename;
   });
 
   form.on('file', function (name, file) {
@@ -118,36 +168,34 @@ exports.updateProfile = async (req, res) => {
     var photoURL;
     if (files && files.file) {
       photoURL = '/uploads/user' + fields.id + '/avatar/' + files.file.originalFilename;
-    }
-    else
+    } else
       photoURL = '';
     var query =
-      fields.password.length > 0 ?
-        {
-          firstname: fields.firstname,
-          lastname: fields.lastname,
-          email: fields.email,
-          phone: fields.phone,
-          status: fields.status,
-          password: bcrypt.hashSync(fields.password),
-          roleId: fields.role || 2
-        } :
-        {
-          firstname: fields.firstname,
-          lastname: fields.lastname,
-          email: fields.email,
-          phone: fields.phone,
-          status: fields.status,
-          roleId: fields.role || 2
-        }
-    if(photoURL != '')
-        query.photoURL =photoURL;
-    User.update(
-      {
+      fields.password.length > 0 ? {
+        firstname: fields.firstname,
+        lastname: fields.lastname,
+        email: fields.email,
+        phone: fields.phone,
+        status: fields.status,
+        password: bcrypt.hashSync(fields.password),
+        roleId: fields.role || 2
+      } : {
+        firstname: fields.firstname,
+        lastname: fields.lastname,
+        email: fields.email,
+        phone: fields.phone,
+        status: fields.status,
+        roleId: fields.role || 2
+      }
+    if (photoURL != '')
+      query.photoURL = photoURL;
+    User.update({
         ...query
-      },
-      { where: { id: fields.id } }
-    )
+      }, {
+        where: {
+          id: fields.id
+        }
+      })
       .then(() => {
         User.findOne({
           where: {
@@ -183,8 +231,10 @@ exports.addUser = (req, res) => {
       email: req.body.email
     }
   }).then((data) => {
-    if (data) res.status(200).json({ message: 'Registerd email' });
-    
+    if (data) res.status(200).json({
+      message: 'Registerd email'
+    });
+
     User.create({
       firstname: req.body.name,
       lastname: req.body.lastName,
@@ -194,7 +244,7 @@ exports.addUser = (req, res) => {
       password: bcrypt.hashSync(req.body.password, 8),
       status: req.body.status ? 'active' : 'inActive'
     }).then((userData) => {
-        
+
       const user = {
         id: userData.id,
         firstname: userData.firstname,
@@ -203,83 +253,91 @@ exports.addUser = (req, res) => {
         roleId: userData.roleId,
         role: ROLES[userData.roleId - 1],
         status: userData.status,
-        phone:userData.phone
+        phone: userData.phone
       };
       res.status(200).json(user)
-    }).catch((error) => {
-    })
+    }).catch((error) => {})
   })
 }
-exports.deleteUser = async (req,res)=> {
+exports.deleteUser = async (req, res) => {
   // delete user directory in uploads folder.
-  req.body.id.forEach((id)=> {
-    try{
-      console.log(require.main.path+'/public/uploads/user'+id);
-      removeDirectory(require.main.path+'/public/uploads/user'+id)
-    }catch(error){
+  req.body.id.forEach((id) => {
+    try {
+      console.log(require.main.path + '/public/uploads/user' + id);
+      removeDirectory(require.main.path + '/public/uploads/user' + id)
+    } catch (error) {
       console.error('error');
     }
   })
-  
 
-  try{
-     User.destroy({where:{id:req.body.id}})
-          .then((count)=>{
-            console.log("delete row numbers", count);
-            res.status(200).send([]);
-          });
-    
-  }catch(error){
-    
+
+  try {
+    User.destroy({
+        where: {
+          id: req.body.id
+        }
+      })
+      .then((count) => {
+        console.log("delete row numbers", count);
+        res.status(200).send([]);
+      });
+
+  } catch (error) {
+
     res.status(500);
   }
 }
 
-exports.uploadAvatar = async(req, res) => {
+exports.uploadAvatar = async (req, res) => {
   const id = req.headers['x-id'];
-  
-  const fileName = req.headers['x-file'];
-  
-  var path = require.main.path+'/public/uploads/user'+id+'/avatar';
 
-  await fs.readdir(path, function(error, files){
-    if(error) console.log('error occoured!')
-    else files.forEach(file=> fs.unlinkSync(path+'/'+file));
+  const fileName = req.headers['x-file'];
+
+  var path = require.main.path + '/public/uploads/user' + id + '/avatar';
+
+  await fs.readdir(path, function (error, files) {
+    if (error) console.log('error occoured!')
+    else files.forEach(file => fs.unlinkSync(path + '/' + file));
   });
-  await fs.existsSync(path) || fs.mkdirSync(path,{recursive:true});
-  
+  await fs.existsSync(path) || fs.mkdirSync(path, {
+    recursive: true
+  });
+
   var form = new formidable.IncomingForm()
 
   form.parse(req);
-  
+
   form.on('fileBegin', function (name, file) {
-    file.filepath = require.main.path+'/public/uploads/user' + id + '/avatar/' + file.originalFilename;
-    
-    
+    file.filepath = require.main.path + '/public/uploads/user' + id + '/avatar/' + file.originalFilename;
+
+
   });
 
   form.on('file', function (name, file) {
     console.log('Uploaded ' + file.originalFilename);
   });
-  
+
 
   form.parse(req, function (err, fields, files) {
 
     var photoURL;
     if (files && files.file) {
       photoURL = '/uploads/user' + id + '/avatar/' + files.file.originalFilename;
-    }
-    else
+    } else
       photoURL = null;
-    
-    User.update(
-      {
+
+    User.update({
         photoURL: photoURL
-      },
-      { where: { id: id } }
-    )
+      }, {
+        where: {
+          id: id
+        }
+      })
       .then(() => {
-        res.status(200).json({id,photoURL})
+        res.status(200).json({
+          id,
+          photoURL
+        })
       })
       .catch((error) => {
         console.log('error', error);
@@ -288,13 +346,17 @@ exports.uploadAvatar = async(req, res) => {
 };
 
 exports.getProfile = (req, res) => {
-  const { authorization } = req.headers;
+  const {
+    authorization
+  } = req.headers;
   if (!authorization) {
     return res.status(400).send([]);
   }
 
   const accessToken = authorization.split(' ')[1];
-  const { userId } = jwt.verify(accessToken, JWT_SECRET);
+  const {
+    userId
+  } = jwt.verify(accessToken, JWT_SECRET);
 
   User.findOne({
     where: {
@@ -308,14 +370,13 @@ exports.getProfile = (req, res) => {
       email: userData.email,
       photoURL: userData.photoURL,
       role: ROLES[userData.roleId - 1],
-      roleId:userData.roleId,
+      roleId: userData.roleId,
       phone: userData.phone,
       status: userData.status
     };
 
-    res.status(200).send({ user });
+    res.status(200).send({
+      user
+    });
   });
 };
-
-
-

@@ -6,7 +6,7 @@ module.exports = (app) => {
     next();
   });
 
-  
+
   app.get('/api/user/profile', controller.getProfile);
 
   // -----------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ module.exports = (app) => {
   app.post('/api/user/users', controller.getUserList);
   app.post('/api/user/updateProfile', controller.updateProfile);
   app.post('/api/user/uploadAvatar', controller.uploadAvatar);
-  
+
   app.post('/api/user/addUser', controller.addUser);
   app.post('/api/user/deleteUser', controller.deleteUser);
 };

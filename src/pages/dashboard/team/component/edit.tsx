@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
-import { Avatar, Box, Typography, Grid, TextField, Switch, MenuItem, Divider, Button,Stack } from '@mui/material';
+import { Avatar, Box, Typography, Grid, TextField, Switch, MenuItem, Divider, Button, Stack } from '@mui/material';
 
 import { useMounted } from '../../../../hooks/use-mounted';
 import type { User } from '../../../../types/user';
@@ -11,23 +11,23 @@ import type { User } from '../../../../types/user';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { updateUser } from 'src/slices/user';
-import  {UploadAvatar}  from '../../../../components/upload';
-import {CONSTANTS} from '../../../../utils/constants';
+import { UploadAvatar } from '../../../../components/upload';
+import { CONSTANTS } from '../../../../utils/constants';
 import { useAuth } from '../../../../hooks/use-auth';
 import { AuthContext } from '../../../../contexts/jwt-context';
 
 
-interface UserEditType{
-  user: User|undefined,
+interface UserEditType {
+  user: User | undefined,
   callback: (description: string) => void;
 }
-interface FIleType{
-  file: File|null,
+interface FIleType {
+  file: File | null,
   preview: string
 }
 export const UserEdit: FC<UserEditType> = (props) => {
   const isMounted = useMounted();
-  const {user, callback} = props;
+  const { user, callback } = props;
 
   const authUser = React.useContext(AuthContext).user;
 
@@ -35,8 +35,8 @@ export const UserEdit: FC<UserEditType> = (props) => {
   if (!user) {
     return null;
   }
-  
-  const {serverURL} = CONSTANTS;
+
+  const { serverURL } = CONSTANTS;
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -80,10 +80,10 @@ export const UserEdit: FC<UserEditType> = (props) => {
     }),
     onSubmit: async (values, helpers): Promise<void> => {
       try {
-            await dispatch(updateUser(user.id,values.firstname, values.lastname, values.phone, values.email, values.password, values.status.length>0?'active':'inActive',values.role, avatarFile?.file))
-            if(user.id == authUser?.id)
-              update(user.id);
-            callback('update');
+        await dispatch(updateUser(user.id, values.firstname, values.lastname, values.phone, values.email, values.password, values.status.length > 0 ? 'active' : 'inActive', values.role, avatarFile?.file))
+        if (user.id == authUser?.id)
+          update(user.id);
+        callback('update');
       } catch (err) {
         console.error(err);
         toast.error('Something went wrong!');
@@ -94,7 +94,7 @@ export const UserEdit: FC<UserEditType> = (props) => {
     }
   });
 
-  const [avatarFile, setAvatarFile]  = useState<FIleType>();
+  const [avatarFile, setAvatarFile] = useState<FIleType>();
 
   const handleDrop = useCallback(async (acceptedFile: File) => {
     const file = acceptedFile;
@@ -104,17 +104,17 @@ export const UserEdit: FC<UserEditType> = (props) => {
         preview: URL.createObjectURL(file)
       });
     }
-    
+
   }, []);
 
   return (
     <form
       onSubmit={formik.handleSubmit}
     >
-      <Grid 
+      <Grid
         container
         sx={{
-          pt:6
+          pt: 6
         }}
       >
         <Grid item xs={5} md={5} sm={12}
@@ -122,22 +122,22 @@ export const UserEdit: FC<UserEditType> = (props) => {
           <Box
             sx={{
               alignItems: 'center',
-              justifyContent:'center',
+              justifyContent: 'center',
               display: 'flex',
               flexWrap: 'wrap',
               mt: 7,
-              
+
             }}
           >
-            <UploadAvatar photoURL={user.photoURL?CONSTANTS.serverURL+'/'+user.photoURL:'/static/mock-images/user.png'} callback={handleDrop}/>
-            
+            <UploadAvatar photoURL={user.photoURL ? CONSTANTS.serverURL + '/' + user.photoURL : '/static/mock-images/user.png'} callback={handleDrop} />
+
             <Box
               sx={{
                 alignItems: 'center',
-                justifyContent:'space-around',
+                justifyContent: 'space-around',
                 display: 'flex',
-                width:'100%',
-                mt:4
+                width: '100%',
+                mt: 4
               }}
             >
               <p>
@@ -149,70 +149,70 @@ export const UserEdit: FC<UserEditType> = (props) => {
                 edge="start"
                 name="status"
                 onChange={formik.handleChange}
-                //value={formik.values.status === 'active' ? true : false}
+              //value={formik.values.status === 'active' ? true : false}
               />
             </Box>
-            
+
           </Box>
-            
+
         </Grid>
         <Grid item xs={7} md={7} sm={12}>
-          <Typography 
+          <Typography
             sx={{
-              width:'100%',
-              mb:1,
-              mt:5,
-              pl:2
-              }} 
+              width: '100%',
+              mb: 1,
+              mt: 5,
+              pl: 2
+            }}
             variant='h6'
           >
             Personal Info
           </Typography>
-          <Divider/>
-          <Grid 
+          <Divider />
+          <Grid
             container
             sx={{
-              pr:3,
-              pl:2,
-              mb:2,
-              mt:2,
-              display:'flex',
-              flexWrap:'wrap',
-              alignItems:'center',
-              justifyContent:'space-between'
+              pr: 3,
+              pl: 2,
+              mb: 2,
+              mt: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Grid item xs={12} md={3} sm={12}>
-              <p style={{fontSize: 13}}>First Name</p>
+              <p style={{ fontSize: 13 }}>First Name</p>
             </Grid>
             <Grid item xs={12} md={7} sm={12}>
               <TextField
-                  error={Boolean(formik.touched.firstname && formik.errors.firstname)}
-                  fullWidth
-                  //helperText={formik.touched.name && formik.errors.name}
-                  label="First name"
-                  name="first"
-                  onBlur={formik.handleBlur}
-                  onChange={formik.handleChange}
-                  required
-                  defaultValue={formik.values.firstname}
-                />
+                error={Boolean(formik.touched.firstname && formik.errors.firstname)}
+                fullWidth
+                //helperText={formik.touched.name && formik.errors.name}
+                label="First name"
+                name="first"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                required
+                defaultValue={formik.values.firstname}
+              />
             </Grid>
           </Grid>
-          <Grid 
+          <Grid
             container
             sx={{
-              pr:3,
-              pl:2,
-              mb:2,
-              display:'flex',
-              flexWrap:'wrap',
-              alignItems:'center',
-              justifyContent:'space-between'
+              pr: 3,
+              pl: 2,
+              mb: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Grid item xs={3} md={3} sm={12}>
-              <p style={{fontSize: 13}}>Last Name</p>
+              <p style={{ fontSize: 13 }}>Last Name</p>
             </Grid>
             <Grid item xs={7} md={7} sm={12}>
               <TextField
@@ -228,20 +228,20 @@ export const UserEdit: FC<UserEditType> = (props) => {
               />
             </Grid>
           </Grid>
-          <Grid 
+          <Grid
             container
             sx={{
-              pr:3,
-              pl:2,
-              mb:2,
-              display:'flex',
-              flexWrap:'wrap',
-              alignItems:'center',
-              justifyContent:'space-between'
+              pr: 3,
+              pl: 2,
+              mb: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Grid item xs={3} md={3} sm={12}>
-              <p style={{fontSize: 13}}>Role</p>
+              <p style={{ fontSize: 13 }}>Role</p>
             </Grid>
             <Grid item xs={7} md={7} sm={12}>
               <TextField
@@ -254,7 +254,7 @@ export const UserEdit: FC<UserEditType> = (props) => {
                 name='role'
                 type="text"
                 onChange={formik.handleChange}
-                defaultValue={user?.roleId||3}
+                defaultValue={user?.roleId || 3}
               >
                 <MenuItem value='1'>
                   {"Admin"}
@@ -265,24 +265,24 @@ export const UserEdit: FC<UserEditType> = (props) => {
                 <MenuItem value='3'>
                   {"User"}
                 </MenuItem>
-                
+
               </TextField>
             </Grid>
           </Grid>
-          <Grid 
+          <Grid
             container
             sx={{
-              pr:3,
-              pl:2,
-              mb:2,
-              display:'flex',
-              flexWrap:'wrap',
-              alignItems:'center',
-              justifyContent:'space-between'
+              pr: 3,
+              pl: 2,
+              mb: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Grid item xs={3} md={3} sm={12}>
-              <p style={{fontSize: 13}}>Phone</p>
+              <p style={{ fontSize: 13 }}>Phone</p>
             </Grid>
             <Grid item xs={7} md={7} sm={12}>
               <TextField
@@ -299,20 +299,20 @@ export const UserEdit: FC<UserEditType> = (props) => {
               />
             </Grid>
           </Grid>
-          <Grid 
+          <Grid
             container
             sx={{
-              pr:3,
-              pl:2,
-              mb:2,
-              display:'flex',
-              flexWrap:'wrap',
-              alignItems:'center',
-              justifyContent:'space-between'
+              pr: 3,
+              pl: 2,
+              mb: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Grid item xs={3} md={3} sm={12}>
-              <p style={{fontSize: 13}}>Email</p>
+              <p style={{ fontSize: 13 }}>Email</p>
             </Grid>
             <Grid item xs={7} md={7} sm={12}>
               <TextField
@@ -328,20 +328,20 @@ export const UserEdit: FC<UserEditType> = (props) => {
               />
             </Grid>
           </Grid>
-          <Grid 
+          <Grid
             container
             sx={{
-              pr:3,
-              pl:2,
-              mb:2,
-              display:'flex',
-              flexWrap:'wrap',
-              alignItems:'center',
-              justifyContent:'space-between'
+              pr: 3,
+              pl: 2,
+              mb: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
             <Grid item xs={3} md={3} sm={12}>
-              <p style={{fontSize: 13}}>Password</p>
+              <p style={{ fontSize: 13 }}>Password</p>
             </Grid>
             <Grid item xs={7} md={7} sm={12}>
               <TextField
@@ -354,24 +354,24 @@ export const UserEdit: FC<UserEditType> = (props) => {
               />
             </Grid>
           </Grid>
-          
+
         </Grid>
       </Grid>
       <Stack direction="row" justifyContent="center">
         <Button
-            disabled={formik.isSubmitting}
-            type="submit"
-            sx={{ m: 3,mr:4 }}
-            variant="contained"
-            >
-            Update
-          </Button>
+          disabled={formik.isSubmitting}
+          type="submit"
+          sx={{ m: 3, mr: 4 }}
+          variant="contained"
+        >
+          Update
+        </Button>
 
         <Button
-            color="error"
-            onClick={(e)=>callback('cancel')}
+          color="error"
+          onClick={(e) => callback('cancel')}
         >
-            Cancel
+          Cancel
         </Button>
       </Stack>
     </form>
@@ -379,5 +379,5 @@ export const UserEdit: FC<UserEditType> = (props) => {
 };
 
 UserEdit.propTypes = {
- 
+
 };

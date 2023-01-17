@@ -5,7 +5,9 @@ const config = require('../config/auth.config');
 const db = require('../models');
 
 const User = db.user;
-const { ROLES } = db;
+const {
+  ROLES
+} = db;
 
 verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];

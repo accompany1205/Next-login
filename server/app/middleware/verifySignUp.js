@@ -1,12 +1,14 @@
 /* eslint-disable no-undef */
 const db = require('../models');
 
-const { ROLES } = db;
+const {
+  ROLES
+} = db;
 const User = db.user;
 
 checkDuplicateEmail = (req, res, next) => {
   // Username
-  
+
   User.findOne({
     where: {
       email: req.body.email

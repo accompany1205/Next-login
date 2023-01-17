@@ -23,7 +23,7 @@ import {
   Avatar,
   Switch,
   MenuItem,
-  Stack 
+  Stack
 } from '@mui/material';
 import { customerApi } from '../../../__fake-api__/customer-api';
 import { AuthGuard } from '../../../components/authentication/auth-guard';
@@ -39,10 +39,10 @@ import type { User } from '../../../types/user';
 
 import { addUser, getUsers } from 'src/slices/user';
 
-import { UserEdit} from './component/edit';
+import { UserEdit } from './component/edit';
 import { UserView } from './component/view';
 import { UserAdd } from './component/add';
-import  {UploadAvatar}  from '../../../components/upload';
+import { UploadAvatar } from '../../../components/upload';
 import axios from '../../../utils/axios';
 import { CONSTANTS } from '../../../utils/constants';
 
@@ -95,8 +95,8 @@ const sortOptions: SortOption[] = [
   }
 ];
 
-interface FIleType{
-  file: File|null,
+interface FIleType {
+  file: File | null,
   preview: string
 }
 
@@ -110,7 +110,7 @@ const UserList: NextPage = () => {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [viewOpen, setViewOpen] = useState<boolean>(false);
 
-  const [user, setUser] = useState<User|undefined>();
+  const [user, setUser] = useState<User | undefined>();
 
   const [file, setFile] = useState<File>();
 
@@ -128,24 +128,24 @@ const UserList: NextPage = () => {
   const [phone, setPhone] = useState<string>('');
   const [status, setStatus] = useState<boolean>(true);
 
-  
+
 
   const dispatch = useDispatch();
 
-  const {users, totalCount} = useSelector((state:any)=> state.user)
-  
-  
+  const { users, totalCount } = useSelector((state: any) => state.user)
+
+
 
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
 
   useEffect(
-   () => {
+    () => {
       initial();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentTab,sort, filters, page, rowsPerPage]
+    [currentTab, sort, filters, page, rowsPerPage]
   );
   useEffect(
     () => {
@@ -153,7 +153,7 @@ const UserList: NextPage = () => {
     },
     []
   )
-  const [avatarFile, setAvatarFile]  = useState<FIleType>();
+  const [avatarFile, setAvatarFile] = useState<FIleType>();
 
   const handleDrop = useCallback(async (acceptedFile: File) => {
     const file = acceptedFile;
@@ -163,22 +163,22 @@ const UserList: NextPage = () => {
         preview: URL.createObjectURL(file)
       });
     }
-    
+
   }, []);
 
-  const rowCallback = (rowId:string, info: string): void=> {
-    if(rowId){
-      const selected_user = users.filter((item:any)=> item.id === rowId)[0];
+  const rowCallback = (rowId: string, info: string): void => {
+    if (rowId) {
+      const selected_user = users.filter((item: any) => item.id === rowId)[0];
       setUser(selected_user);
-      if(info === 'edit')
+      if (info === 'edit')
         setEditOpen(true);
-      return;   
+      return;
     }
-    setViewOpen(true); 
+    setViewOpen(true);
   }
-  const initial = async() =>{
-    await dispatch(getUsers(currentTab,sort,filters,{page:page,rows:rowsPerPage}));
-      
+  const initial = async () => {
+    await dispatch(getUsers(currentTab, sort, filters, { page: page, rows: rowsPerPage }));
+
   }
 
   const handleModalStatus = (event: MouseEvent<{}>): void => {
@@ -190,16 +190,16 @@ const UserList: NextPage = () => {
     //
     const id = await dispatch(addUser(name, lastName, role, phone, email, password, status, avatarFile?.file?.name));
     const formData = new FormData();
-    if(!id)  return;
-    if(id && avatarFile && avatarFile.file){
-      
+    if (!id) return;
+    if (id && avatarFile && avatarFile.file) {
+
       formData.append('file', avatarFile?.file);
       axios.post('/api/user/uploadAvatar',
-        formData,{
-          headers: { 'X-Requested-With': 'XMLHttpRequest', 'x-id': id },
-        }).then((res)=>{
-          
-        })
+        formData, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'x-id': id },
+      }).then((res) => {
+
+      })
     }
 
   }
@@ -213,48 +213,48 @@ const UserList: NextPage = () => {
   const handleEditSubmit = (event: MouseEvent<{}>): void => {
     handleModalStatus(event);
     setEditOpen(false);
-    
+
   }
   // const handleFileChange = (event: ChangeEvent<{}>, value: File): void => {
   //   if(value)
   //     setFile(value);
   //   else
-      
+
   // }
 
-  const handleName = (event: ChangeEvent<HTMLInputElement>):void => {
+  const handleName = (event: ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value);
   }
-  const handleLastName = (event: ChangeEvent<HTMLInputElement>):void => {
+  const handleLastName = (event: ChangeEvent<HTMLInputElement>): void => {
     setLastName(event.target.value);
   }
-  const handleEmail = (event: ChangeEvent<HTMLInputElement>):void => {
+  const handleEmail = (event: ChangeEvent<HTMLInputElement>): void => {
     setEmail(event.target.value);
   }
-  const handlePhone = (event: ChangeEvent<HTMLInputElement>):void => {
+  const handlePhone = (event: ChangeEvent<HTMLInputElement>): void => {
     setPhone(event.target.value);
   }
-  const handleRole = (event: ChangeEvent<HTMLInputElement>):void => {
+  const handleRole = (event: ChangeEvent<HTMLInputElement>): void => {
     setRole(event.target.value);
   }
-  const handlePassword = (event: ChangeEvent<HTMLInputElement>):void => {
+  const handlePassword = (event: ChangeEvent<HTMLInputElement>): void => {
     setPassword(event.target.value);
   }
 
-  const handleSwitch = (event: any):void => {
+  const handleSwitch = (event: any): void => {
 
     setStatus(!status);
 
   }
 
   const handleTabsChange = (event: ChangeEvent<{}>, value: TabValue): void => {
-    
+
     setCurrentTab(value);
   };
 
   const handleQueryChange = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    setFilters(queryRef.current?queryRef.current.value:"");
+    setFilters(queryRef.current ? queryRef.current.value : "");
   };
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -269,7 +269,7 @@ const UserList: NextPage = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const profileEditCallback = (viewUser: User):void => {
+  const profileEditCallback = (viewUser: User): void => {
     setUser(viewUser);
     setViewOpen(false);
     setEditOpen(true);
@@ -277,9 +277,9 @@ const UserList: NextPage = () => {
 
   const editCallback = (description: string): void => {
     setEditOpen(false);
-    if(description === 'update')
+    if (description === 'update')
       setViewOpen(true);
-    
+
   }
 
   const addCallback = (): void => {
@@ -288,7 +288,7 @@ const UserList: NextPage = () => {
 
 
 
-  
+
   return (
     <>
       <Head>
@@ -325,7 +325,7 @@ const UserList: NextPage = () => {
                 </Button>
               </Grid>
             </Grid>
-            
+
           </Box>
           <Card>
             <Tabs
@@ -397,7 +397,7 @@ const UserList: NextPage = () => {
               </TextField>
             </Box>
             {
-              users && users.length>0 &&
+              users && users.length > 0 &&
               <UserListTable
                 users={users}
                 usersCount={totalCount}
@@ -410,42 +410,42 @@ const UserList: NextPage = () => {
             }
           </Card>
         </Container>
-        <Dialog 
-          open={open} 
+        <Dialog
+          open={open}
           fullWidth={true}
           maxWidth="md"
-          onClose={handleModalStatus} 
+          onClose={handleModalStatus}
           aria-labelledby="form-dialog-title"
         >
-          <UserAdd callback={addCallback}/>
+          <UserAdd callback={addCallback} />
         </Dialog>
-        <Dialog 
-          open={editOpen} 
+        <Dialog
+          open={editOpen}
           fullWidth={true}
           maxWidth="md"
-          onClose={handleEditModalStatus} 
+          onClose={handleEditModalStatus}
           aria-labelledby="form-dialog-title"
         >
-          <UserEdit user={user} callback={editCallback}/>
+          <UserEdit user={user} callback={editCallback} />
         </Dialog>
-        <Dialog 
-          open={viewOpen} 
+        <Dialog
+          open={viewOpen}
           fullWidth={true}
           maxWidth="md"
-          onClose={handleViewModalStatus} 
+          onClose={handleViewModalStatus}
           aria-labelledby="form-dialog-title"
           sx={{}}
         >
-          <DialogContent sx={{backgroundColor: "#F9FAFC !important", p:6}}>
-            <UserView editCallback={profileEditCallback}/>
+          <DialogContent sx={{ backgroundColor: "#F9FAFC !important", p: 6 }}>
+            <UserView editCallback={profileEditCallback} />
           </DialogContent>
-          <DialogActions sx={{backgroundColor: "#F9FAFC !important", mt:-5, pb:5, display:'flex', justifyContent:'center'}}>
+          <DialogActions sx={{ backgroundColor: "#F9FAFC !important", mt: -5, pb: 5, display: 'flex', justifyContent: 'center' }}>
             <Stack direction='row' justifyContent="center">
               <Button onClick={handleViewModalStatus} color="primary" variant='outlined'>
                 Close
               </Button>
             </Stack>
-            
+
           </DialogActions>
         </Dialog>
       </Box>

@@ -27,13 +27,10 @@ export const UserView: FC<UserEditFormProps> = (props) => {
   const { user, ...other } = props;
   const formik = useFormik({
     initialValues: {
-      address1: user.address1 || '',
-      address2: user.address2 || '',
-      country: user.country || '',
+
       email: user.email || '',
       password: user.password || '',
-      hasDiscount: user.hasDiscount || false,
-      isVerified: user.isVerified || false,
+
       firstname: user.firstname || '',
       lastname: user.lastname || '',
       phone: user.phone || '',
@@ -63,20 +60,20 @@ export const UserView: FC<UserEditFormProps> = (props) => {
       state: Yup.string().max(255)
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-      
+
     }
   });
 
   return (
     <form
-      
+
       {...other}
     >
       <Card>
         <CardHeader title="Edit user" />
         <Divider />
         <CardContent>
-        <Grid container spacing={3} sx={{mb:5}}>
+          <Grid container spacing={3} sx={{ mb: 5 }}>
             <Grid
               item
               md={6}
@@ -93,7 +90,7 @@ export const UserView: FC<UserEditFormProps> = (props) => {
                 required
                 defaultValue={formik.values.firstname}
               />
-            
+
             </Grid>
             <Grid
               item
@@ -112,13 +109,13 @@ export const UserView: FC<UserEditFormProps> = (props) => {
                 defaultValue={formik.values.lastname}
               />
             </Grid>
-        </Grid>
-        <Grid
+          </Grid>
+          <Grid
             container
             spacing={3}
-            sx={{mb:5}}
+            sx={{ mb: 5 }}
           >
-            
+
             <Grid
               item
               md={6}
@@ -150,13 +147,13 @@ export const UserView: FC<UserEditFormProps> = (props) => {
                 defaultValue={formik.values.password}
               />
             </Grid>
-        </Grid>
-        <Grid
+          </Grid>
+          <Grid
             container
             spacing={3}
-            sx={{mb:5}}
+            sx={{ mb: 5 }}
           >
-            
+
             <Grid
               item
               md={6}
@@ -175,7 +172,7 @@ export const UserView: FC<UserEditFormProps> = (props) => {
                 defaultValue={formik.values.phone}
               />
             </Grid>
-        </Grid>
+          </Grid>
           <Box
             sx={{
               alignItems: 'center',
@@ -190,7 +187,7 @@ export const UserView: FC<UserEditFormProps> = (props) => {
               edge="start"
               name="status"
               onChange={formik.handleChange}
-              //value={formik.values.status === 'active' ? true : false}
+            //value={formik.values.status === 'active' ? true : false}
             />
           </Box>
         </CardContent>
@@ -198,25 +195,25 @@ export const UserView: FC<UserEditFormProps> = (props) => {
           sx={{
             flexWrap: 'wrap',
             m: -1,
-            display:'flex',
-            justifyContent:'space-around'
+            display: 'flex',
+            justifyContent: 'space-around'
           }}
         >
-        <Button
+          <Button
             disabled={formik.isSubmitting}
             type="submit"
             sx={{ m: 1 }}
             variant="contained"
-            >
+          >
             Update
-        </Button>
+          </Button>
 
-        <Button
+          <Button
             color="error"
             disabled={formik.isSubmitting}
-        >
+          >
             Delete user
-        </Button>
+          </Button>
         </CardActions>
       </Card>
     </form>

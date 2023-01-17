@@ -40,7 +40,7 @@ interface UserListTableProps {
     usersCount: number;
     onPageChange: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-    rowcallback: (rowId: string|null, info: string) => void;
+    rowcallback: (rowId: string | null, info: string) => void;
     page: number;
     rowsPerPage: number;
 }
@@ -56,7 +56,7 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
         rowcallback,
         ...other
     } = props;
-    const [selectedUsers, setSelectedUsers] = useState<(string|null)[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<(string | null)[]>([]);
     const dispatch = useDispatch();
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
     //const [userId, setUserId] = useState<string>('');
@@ -72,9 +72,9 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
         [users]
     );
 
-    const handleClose = (description: string):void =>{
+    const handleClose = (description: string): void => {
         setDeleteOpen(false);
-        if(description == 'agree')
+        if (description == 'agree')
             dispatch(deleteUser(selectedUsers));
     }
 
@@ -86,22 +86,22 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
         );
     };
 
-    const handleDeleteClick = (event:any,id:string|null): void  => {
-        if(!id)return;
+    const handleDeleteClick = (event: any, id: string | null): void => {
+        if (!id) return;
         setSelectedUsers([id]);
         setDeleteOpen(true);
-      };
-    
-    const handleMultiDelete = (event: any) :void => {
-        
+    };
+
+    const handleMultiDelete = (event: any): void => {
+
         setDeleteOpen(true);
     }
 
     const handleSelectOneUser = (
         event: ChangeEvent<HTMLInputElement>,
-        userId: string|null
+        userId: string | null
     ): void => {
-        if(!userId)return;
+        if (!userId) return;
         if (!selectedUsers.includes(userId)) {
             setSelectedUsers((prevSelected) => [...prevSelected, userId]);
         } else {
@@ -134,7 +134,7 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
                 <Button
                     size="small"
                     sx={{ ml: 2 }}
-                    onClick={(event)=> handleMultiDelete(event)}
+                    onClick={(event) => handleMultiDelete(event)}
                 >
                     Delete
                 </Button>
@@ -172,9 +172,9 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
                     </TableHead>
                     <TableBody>
                         {users.map((user) => {
-                            if(user && user.id) {
+                            if (user && user.id) {
                                 const isUserSelected = selectedUsers.includes(user.id);
-    
+
                                 return (
                                     user && user.id && <TableRow
                                         hover
@@ -199,7 +199,7 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
                                                 }}
                                             >
                                                 <Avatar
-                                                    src={CONSTANTS.serverURL+ user.photoURL}
+                                                    src={CONSTANTS.serverURL + user.photoURL}
                                                     sx={{
                                                         height: 42,
                                                         width: 42
@@ -212,14 +212,14 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
                                                         color="inherit"
                                                         variant="subtitle2"
                                                         onClick={(event: any) => {
-                                                            rowcallback('','view')
+                                                            rowcallback('', 'view')
                                                             dispatch(slice.actions.updateSelectedUser(user));
                                                         }}
-                                                        sx={{cursor: 'pointer'}}
+                                                        sx={{ cursor: 'pointer' }}
                                                     >
                                                         {user.firstname + ' ' + user.lastname}
                                                     </Link>
-                                                    
+
                                                 </Box>
                                             </Box>
                                         </TableCell>
@@ -249,11 +249,11 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
                                             </Typography>
                                         </TableCell>
                                         <TableCell align="right">
-                                            <IconButton component="a" onClick={(event: any) => rowcallback(user.id,'edit')}>
+                                            <IconButton component="a" onClick={(event: any) => rowcallback(user.id, 'edit')}>
                                                 <PencilAltIcon fontSize="small" />
                                             </IconButton>
-    
-                                            <IconButton component="a" onClick={(event: any) => handleDeleteClick(event,user.id)}>
+
+                                            <IconButton component="a" onClick={(event: any) => handleDeleteClick(event, user.id)}>
                                                 <DeleteForeverIcon fontSize="small" />
                                             </IconButton>
                                         </TableCell>
@@ -277,24 +277,24 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
             />
             <Dialog
                 open={deleteOpen}
-                onClose={(event)=>handleClose('disagree')}
+                onClose={(event) => handleClose('disagree')}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                {"Do you delete this User?"}
+                    {"Do you delete this User?"}
                 </DialogTitle>
                 <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    If you delete a user, then you can't recover it.
-                    Please think it carefully again.
-                </DialogContentText>
+                    <DialogContentText id="alert-dialog-description">
+                        If you delete a user, then you can't recover it.
+                        Please think it carefully again.
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={(event)=>handleClose('disagree')}>Disagree</Button>
-                <Button onClick={(event)=>handleClose('agree')} autoFocus>
-                    Agree
-                </Button>
+                    <Button onClick={(event) => handleClose('disagree')}>Disagree</Button>
+                    <Button onClick={(event) => handleClose('agree')} autoFocus>
+                        Agree
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>
