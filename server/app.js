@@ -62,8 +62,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
+require('./app/routes/calendar.routes')(app);
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
-  
+  console.log('server started at port 8000')
 });

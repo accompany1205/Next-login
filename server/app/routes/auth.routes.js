@@ -16,3 +16,4 @@ module.exports = (app) => {
   app.post('/api/auth/login', controller.signin);
   app.post('/api/auth/updateUser', controller.update);
 };
+

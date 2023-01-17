@@ -1,10 +1,10 @@
-import { calendarApi } from '../__fake-api__/calendar-api';
+import { calendarApi } from '../api/calendar-api';
 import { slice } from '../slices/calendar';
 import { AppThunk } from '../store';
 
 export const getEvents = (): AppThunk => async (dispatch): Promise<void> => {
   const response = await calendarApi.getEvents();
-
+  console.log('thunk-getEvents', response);
   dispatch(slice.actions.getEvents(response));
 };
 
@@ -17,6 +17,7 @@ type CreateEventParams = {
 };
 
 export const createEvent = (params: CreateEventParams): AppThunk => async (dispatch): Promise<void> => {
+  console.log("thunk-createEvent",params);
   const response = await calendarApi.createEvent(params);
 
   dispatch(slice.actions.createEvent(response));

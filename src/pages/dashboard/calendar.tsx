@@ -25,6 +25,7 @@ import { gtm } from '../../lib/gtm';
 import { useDispatch, useSelector } from '../../store';
 import { getEvents, updateEvent } from '../../thunks/calendar';
 import type { CalendarView } from '../../types/calendar';
+import type { CalendarEvent } from '../../types/calendar';
 
 const FullCalendarWrapper = styled('div')(
   ({ theme }) => ({
@@ -86,7 +87,7 @@ const Calendar: NextPage = () => {
     eventId: undefined,
     range: undefined
   });
-
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent|null>(dialog.eventId && events.find((event:any) => event.id === dialog.eventId));
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
@@ -180,7 +181,8 @@ const Calendar: NextPage = () => {
 
       calendarApi.unselect();
     }
-
+    if(selectedEvent)
+      setSelectedEvent(null);
     setDialog({
       isOpen: true,
       range: {
@@ -191,6 +193,10 @@ const Calendar: NextPage = () => {
   };
 
   const handleEventSelect = (arg: EventClickArg): void => {
+    console.log(arg.event.id);
+    if(arg.event.id){
+      setSelectedEvent(events.find((event:any) => event.id == arg.event.id)||null)
+    }
     setDialog({
       isOpen: true,
       eventId: arg.event.id
@@ -199,7 +205,6 @@ const Calendar: NextPage = () => {
 
   const handleEventResize = async (arg: EventResizeDoneArg): Promise<void> => {
     const { event } = arg;
-
     try {
       await dispatch(updateEvent({
         eventId: event.id,
@@ -237,7 +242,7 @@ const Calendar: NextPage = () => {
     });
   };
 
-  const selectedEvent = dialog.eventId && events.find((event) => event.id === dialog.eventId);
+  
 
   return (
     <>

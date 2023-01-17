@@ -128,9 +128,10 @@ export const updateAvatar = (id: string, file: File ):AppThunk => async (dispatc
     }
 }
 
-export const deleteUser = (id: string[]):AppThunk =>async (dispatch):Promise<void> => {
+export const deleteUser = (id: (string|null)[]):AppThunk =>async (dispatch):Promise<void> => {
     dispatch(slice.actions.startLoading());
     try{
+        if(!id)return;
         const response = await axios.post('/api/user/deleteUser',
             {id})
         dispatch(slice.actions.deleteUser(id));

@@ -40,7 +40,7 @@ interface UserListTableProps {
     usersCount: number;
     onPageChange: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-    rowcallback: (rowId: string, info: string) => void;
+    rowcallback: (rowId: string|null, info: string) => void;
     page: number;
     rowsPerPage: number;
 }
@@ -56,7 +56,7 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
         rowcallback,
         ...other
     } = props;
-    const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<(string|null)[]>([]);
     const dispatch = useDispatch();
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
     //const [userId, setUserId] = useState<string>('');
@@ -86,7 +86,8 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
         );
     };
 
-    const handleDeleteClick = (event:any,id:string): void  => {
+    const handleDeleteClick = (event:any,id:string|null): void  => {
+        if(!id)return;
         setSelectedUsers([id]);
         setDeleteOpen(true);
       };
@@ -98,8 +99,9 @@ export const UserListTable = (props: UserListTableProps): JSX.Element => {
 
     const handleSelectOneUser = (
         event: ChangeEvent<HTMLInputElement>,
-        userId: string
+        userId: string|null
     ): void => {
+        if(!userId)return;
         if (!selectedUsers.includes(userId)) {
             setSelectedUsers((prevSelected) => [...prevSelected, userId]);
         } else {

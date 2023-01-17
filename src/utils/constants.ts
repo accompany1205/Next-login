@@ -1,6 +1,5 @@
 export const CONSTANTS = {
-    // serverURL: 'http://3.68.219.73:8081'
-    serverURL: 'http://192.168.116.70:8000',
+    serverURL: 'http://localhost:8001',
     locations: [
       { name: 'Afghanistan', code: 'AF' },
       { name: 'Åland Islands', code: 'AX' },

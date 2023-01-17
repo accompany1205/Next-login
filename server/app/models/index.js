@@ -21,6 +21,7 @@ db.sequelize = sequelize;
 
 db.user = require('./user.model')(sequelize, Sequelize);
 db.role = require('./role.model')(sequelize, Sequelize);
+db.calendarEvent = require('./calendar.model')(sequelize, Sequelize);
 
 
 

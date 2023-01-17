@@ -24,7 +24,7 @@ import { createEvent, deleteEvent, updateEvent } from '../../../thunks/calendar'
 import type { CalendarEvent } from '../../../types/calendar';
 
 interface CalendarEventFormProps {
-  event?: CalendarEvent;
+  event?: CalendarEvent|null;
   onAddComplete?: () => void;
   onClose?: () => void;
   onDeleteComplete?: () => void;
@@ -53,6 +53,7 @@ export const CalendarEventDialog: FC<CalendarEventFormProps> = (props) => {
     open,
     range
   } = props;
+  console.log(event);
   const dispatch = useDispatch();
   const initialValues = useMemo(
     (): FormValues => {
